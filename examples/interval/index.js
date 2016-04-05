@@ -7,8 +7,9 @@ client.on('connect', function () {
 });
 
 client.on('message', function (topic, payload) {
-    // message is Buffer
-    console.log(topic + ': ' + payload.message.toString());
+    // payload is Buffer
+    payload = JSON.parse(payload);
+    console.log(topic + ': ' + payload.message);
 
     if (payload.isEnd) {
         closeConnection();
