@@ -6,6 +6,7 @@
     "npm": "^3.0.0"
   },
   "dependencies": {
+    "amqplib": "^0.4.1",
     "browserify-middleware": "^6.0.0",
     "mqtt": "^1.7.4"
   }
