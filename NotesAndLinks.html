@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MQTT notes and links</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>MQTT - lightweight protocol</h1>
+        <ul>
+            <li>One of brokers: <a target="_blank" href="https://www.rabbitmq.com/devtools.html">RabbitMQ</a></li>
+        </ul>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>General overview (<a class="small" target="_blank" href="http://www.hivemq.com/blog/how-to-get-started-with-mqtt">source</a>)</h2>
+                <p>
+                    The protocol uses a publish/subscribe architecture in contrast to HTTP with its request/response paradigm.
+                    The difference to HTTP is that a client doesn’t have to pull the information it needs, but the broker pushes the information to the client.
+                </p>
+                <p>
+                    Publish/Subscribe is event-driven and enables messages to be pushed to clients. The central communication point
+                    is the <b>MQTT broker</b>, it is in charge of dispatching all messages between the senders and the rightful receivers.
+                    Each client that publishes a message to the broker, includes a topic into the message.
+                    The topic is the routing information for the broker. Each client that wants to receive messages subscribes
+                    to a certain topic and the broker delivers all messages with the matching topic to the client.
+                    If this connection is interrupted by any circumstances, the MQTT broker can buffer all messages and send them to the client when it is back online.
+                </p>
+                <p>
+                    A <b>topic</b> is a simple string that can have more hierarchy levels, which are separated by a
+                    slash (e.g. house/living-room/temperature - possible topic of term sensor). <br>
+                    For all term sensor: house/+/temperature (can includes house/living-room/temperature as well as house/kitchen/temperature) <br>
+                    For all underline topics: house/#
+                </p>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <figure class="thumbnail">
+                            <img src="http://www.hivemq.com/wp-content/uploads/Screen-Shot-2014-10-22-at-12.21.07.png" alt="MQTT architecture">
+                            <figcaption>MQTT Publish/Subscribe Architecture</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>For JS</h2>
+                <p>MQTT.js: <a target="_blank" href="https://github.com/mqttjs/MQTT.js">GitHub</a></p>
+                <p>Base Node.js example: </p>
+                <pre>
+                    var mqtt    = require('mqtt');
+                    var client  = mqtt.connect('mqtt://test.mosquitto.org'); //mqtt://test.mosquitto.org - broker
+
+                    client.on('connect', function () {
+                      client.subscribe('presence'); //'presence' is a topic
+                      client.publish('presence', 'Hello mqtt');
+                    });
+
+                    client.on('message', function (topic, message) {
+                      // message is Buffer
+                      console.log(message.toString());
+                      client.end();
+                    });
+                </pre>
+                <br>
+                <p>Base browser example: </p>
+                <pre>
+                      var client = mqtt.connect(); // you add a ws:// url here
+                      client.subscribe("mqtt/demo");
+
+                      client.on("message", function(topic, payload) {
+                        alert([topic, payload].join(": "));
+                        client.end();
+                      });
+
+                      client.publish("mqtt/demo", "hello world!");
+                </pre>
+                <p>Your broker should accept websocket connection</p>
+                <p>WebSocket example: <a target="_blank" href="http://mitsuruog.github.io/what-mqtt/">http://mitsuruog.github.io/what-mqtt/</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

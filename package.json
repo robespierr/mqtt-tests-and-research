@@ -1,0 +1,12 @@
+{
+  "name": "MQTT_POC",
+  "version": "0.0.1",
+  "engines": {
+    "node": "~4.2.1",
+    "npm": "^3.0.0"
+  },
+  "dependencies": {
+    "browserify-middleware": "^6.0.0",
+    "mqtt": "^1.7.4"
+  }
+}

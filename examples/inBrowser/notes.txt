@@ -1,0 +1,2 @@
+Command to build: browserify ./examples/inBrowser/src/index.js -o ./examples/inBrowser/public/index.js
+Open index.html in browser to see result
