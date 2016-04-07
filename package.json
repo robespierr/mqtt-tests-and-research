@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "amqplib": "^0.4.1",
-    "browserify-middleware": "^6.0.0",
+    "express": "*",
     "mqtt": "^1.7.4"
   }
 }

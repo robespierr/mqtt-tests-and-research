@@ -78,6 +78,8 @@
                 </pre>
                 <p>Your broker should accept websocket connection</p>
                 <p>WebSocket example: <a target="_blank" href="http://mitsuruog.github.io/what-mqtt/">http://mitsuruog.github.io/what-mqtt/</a></p>
+                <br>
+                <p>Paho.js: <a target="_blank" href="https://www.eclipse.org/paho/clients/js/">https://www.eclipse.org/paho/clients/js/</a></p>
             </div>
         </div>
 
@@ -94,9 +96,29 @@
                 
                 <p><a target="_blank" href="https://www.rabbitmq.com/tutorials/tutorial-one-javascript.html">Tutorial for JS</a></p>
                 <p>
-                    <a target="_blank" href="http://www.rabbitmq.com/management.html">Management Plugin</a><br>
-                    <a href="http://localhost:15672/#/">http://localhost:15672/#/</a> or <a href="http://andrey:15672/#/">http://andrey:15672/#/</a><br>
-                    login/pass: guest
+                    <a target="_blank" href="http://www.rabbitmq.com/management.html">Management Plugin</a> for web dash board on address: <a target="_blank" href="http://localhost:15672/#/">http://localhost:15672/#/</a> or <a target="_blank" href="http://yourhostname:15672/#/">http://yourhostname:15672/#/</a><br>
+                    Default login/pass: guest
+                </p>
+                <p>
+                    For Web Socket RabbitMQ need another <a target="_blank" href="http://www.rabbitmq.com/web-stomp.html">plugin</a>.
+                    <br>
+                    In fact, this plugin officially is under developing and works with another protocol (STOMP). And it has SockJS inside for compatibility. <br>
+                    UPD: there is new plugin with MQTT support: <a target="_blank" href="https://github.com/rabbitmq/rabbitmq-web-mqtt">https://github.com/rabbitmq/rabbitmq-web-mqtt</a>
+                </p>
+                <br>
+                <h4>How to install plugin, which isn't included in dist.</h4>
+                <p>
+                    First, you need to install all dev-tools on this page: <a target="_blank" href="http://www.rabbitmq.com/build-server.html">http://www.rabbitmq.com/build-server.html</a> <br>
+                    For ubuntu type this command:
+                    <span class="code">
+                        sudo apt-get install -y debhelper erlang-dev erlang-src python-simplejson \
+                                xmlto xsltproc erlang-nox zip rsync
+                    </span> <br>
+                    Then clone plugin repository and follow steps on this link: <a target="_blank" href="http://www.rabbitmq.com/plugin-development.html">http://www.rabbitmq.com/plugin-development.html</a> <br>
+                    When you get "plugins" directory after "make dist" command, put your plugin in /usr/lib/rabbitmq/lib/rabbitmq_server-3.6.1/plugins/ as it mentioned here
+                    <a target="_blank" href="http://www.rabbitmq.com/installing-plugins.html">http://www.rabbitmq.com/installing-plugins.html</a>. Important: also check other plugins
+                    in directory "plugins" of your plugin, you should have all of those in rabbit plugins dir. <br>
+                    Then enable your plugin with command: <span class="code">rabbitmq-plugins enable <span class="italic">plugin-name</span></span> and restart server.
                 </p>
             </div>
         </div>
