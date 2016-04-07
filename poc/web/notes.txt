@@ -1,0 +1,1 @@
+Command to build: browserify -t reactify ./poc/web/client/src/index.js -o ./poc/web/client/public/index.js
