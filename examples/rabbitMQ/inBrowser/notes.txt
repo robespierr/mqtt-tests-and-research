@@ -1,2 +1,0 @@
-Command to build: browserify ./examples/rabbitMQ/inBrowser/client/src/index.js -o ./examples/rabbitMQ/inBrowser/client/public/index.js
-Open index.html in browser to see result

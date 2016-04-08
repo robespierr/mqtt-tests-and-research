@@ -10,6 +10,8 @@
     "express": "*",
     "mqtt": "^1.7.4",
     "reactify": "^1.1.0",
-    "react": "^0.13.3"
+    "react": "^0.13.3",
+    "stompjs": "*",
+    "sockjs-client": "*"
   }
 }
