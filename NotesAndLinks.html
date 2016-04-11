@@ -103,7 +103,12 @@
                     For Web Socket RabbitMQ need another <a target="_blank" href="http://www.rabbitmq.com/web-stomp.html">plugin</a>.
                     <br>
                     In fact, this plugin officially is under developing and works with another protocol (STOMP). And it has SockJS inside for compatibility. <br>
-                    UPD: there is new plugin with MQTT support: <a target="_blank" href="https://github.com/rabbitmq/rabbitmq-web-mqtt">https://github.com/rabbitmq/rabbitmq-web-mqtt</a>
+                    UPD: there is new plugin with MQTT support: <a target="_blank" href="https://github.com/rabbitmq/rabbitmq-web-mqtt">https://github.com/rabbitmq/rabbitmq-web-mqtt</a> ,
+                    but it has serious issue and looks like it doesn't work: <a target="_blank" href="http://stackoverflow.com/questions/34979020/rabbitmq-mqtt-over-websockets">rabbitmq web mqtt problem</a>
+                </p>
+                <p>
+                    RabbitMQ can coordinate different protocols inside itself. For example one client can send message in STOMP for "/topic/message" destination, and some other client
+                    can get it throw MQTT use just "message" topic.
                 </p>
                 <br>
                 <h4>How to install plugin, which isn't included in dist.</h4>
