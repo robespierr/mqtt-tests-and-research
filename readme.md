@@ -84,5 +84,5 @@ Use
 after changes for build.
 
 ### Starting POCs: 
-See ./mqtt/poc/readme.md for MQTT and ./stomp/poc/readme.md for STOMP
+See [mqtt-poc](mqtt/poc/readme.md) for MQTT and [stomp-poc](stomp/poc/readme.md) for STOMP
 
