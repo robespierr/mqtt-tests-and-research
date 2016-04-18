@@ -5,17 +5,17 @@
 This proof-of-concept app implements prospective schema for using MQTT in API and React application.
 So there are three main parts:
 - data server (./mqtt/poc/data) - emulation of some internal service (rmi or other), which for now just answer with some random number
-- API - code that publish data from data server in broker and handle messages for register clients and keep them alive
-- web application - final client, which send request for register, subscribe and publish keep-alive
+- API - code that publish data from data server to broker and handle messages for register clients and keep them alive
+- web application - final client, which send request for register, subscribe on data and publish keep-alive
 
 Here cool picture, which can describe it more clearly:
 
 <pre>
-                                  --------                 --------              -------
-     (*|*)   ----keep-alive----> |        |--keep-alive-->|        |            |        |                
-    [client] ----register------> |  MQTT  |--register---->|  API   |<***data***>|  Data  |                
-      / \    <---data/id-------- | broker |<--data/id---- |        |            | server |                
-                                  ________                 ________              ________                
+                                  --------                   --------                -------
+     (*|*)   ----keep-alive----> |        | --keep-alive--> |        |              |        |                
+    [client] ----register------> |  MQTT  | --register----> |  API   | <***data***> |  Data  |                
+      / \    <---data/id-------- | broker | <--data/id----- |        |              | server |                
+                                  ________                   ________                ________                
     
     -->(broker) publish
     <--(broker) subscribe
