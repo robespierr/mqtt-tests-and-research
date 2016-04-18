@@ -2,7 +2,7 @@ const mqtt = require('mqtt');
 const React = require('react/addons');
 const MQTT_BROKER_URL = 'ws://test.mosquitto.org:8080/mqtt';
 const MQTT_PUBLISH_KEEP_ALIVE_DELAY = 9000;
-const clientId = 'ib-mqtt-' + (Math.random() * 100000).toFixed(0);
+const clientId = new URLSearchParams(location.search.slice(1)).get('clientId');
 
 const Application = React.createClass({
     displayName: 'Application',
@@ -18,7 +18,7 @@ const Application = React.createClass({
 
     componentWillMount() {
         this._mqttOpenConnection(MQTT_BROKER_URL, () => {
-            this._mqttSubscribe(`ib-test/${clientId}/data`);
+            this._mqttSubscribe(`ib-test/data/${clientId}`);
             this._mqttPublish('ib-test/registration', {clientId: clientId});
         });
     },

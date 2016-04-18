@@ -28184,8 +28184,8 @@ const Application = React.createClass({
 
     componentWillMount() {
         this._stompOpenConnection(STOMP_BROKER_URL, () => {
-            this._stompSubscribe(`/topic/${clientId}`, stompCallbackDecorator(this._stompOnData));
-            this._stompPublish('/topic/registration', {clientId: clientId});
+            this._stompSubscribe(`/topic/ib-test.data.${clientId}`, stompCallbackDecorator(this._stompOnData));
+            this._stompPublish('/topic/ib-test.registration', {clientId: clientId});
         });
     },
 
@@ -28257,10 +28257,10 @@ const Application = React.createClass({
 
     _stompStartPublishKeepAlive(delay) {
         delay = delay || STOMP_PUBLISH_KEEP_ALIVE_DELAY;
-        this._stompPublish('/topic/keep-alive', {clientId: clientId});
+        this._stompPublish('/topic/ib-test.keep-alive', {clientId: clientId});
 
         const interval = setInterval(() => {
-            this._stompPublish('/topic/keep-alive', {clientId: clientId})
+            this._stompPublish('/topic/ib-test.keep-alive', {clientId: clientId})
         }, delay);
 
         this.setState({

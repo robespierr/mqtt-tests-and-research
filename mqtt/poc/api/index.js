@@ -1,7 +1,8 @@
 'use strict';
 const http   = require('http');
 const mqtt   = require('mqtt');
-const mqttClient = mqtt.connect('mqtt://test.mosquitto.org');
+const mqttClient = mqtt.connect('mqtt://test.mosquitto.org'); //remote mosquitto broker
+//const mqttClient = mqtt.connect('mqtt://localhost:1883'); //local rabbitMQ broker
 
 const PUBLISH_DATA_INTERVAL = 3000;
 const MAX_KEEP_ALIVE_DELAY = 10000;
@@ -27,26 +28,54 @@ mqttClient.on('message', function (topic, payload) {
     switch (topic) {
         case 'ib-test/registration':
             console.log('get new client ', payload.clientId);
-            setNewClient(payload.clientId);
-            if (!publishDataInterval) {
-                startPublishData();
-            }
+            onRegister(payload);
             break;
 
         case 'ib-test/keep-alive':
             console.log('get keep alive', payload.clientId);
-            resetKeepAliveInterval(payload.clientId);
+            onKeepAlive(payload);
             break;
     }
 });
 
 setInterval(checkKeepAlive, CHECK_KEEP_ALIVE_INVERVAL);
 
+function onRegister(payload) {
+    const client = clients.find(client => client.id === payload.clientId);
+
+    if (!client) {
+        setNewClient(payload.clientId);
+    } else {
+        resetKeepAliveInterval(client);
+    }
+
+    if (!publishDataInterval) {
+        startPublishData();
+    }
+}
+
+function onKeepAlive(payload) {
+    console.log('get keep alive', payload.clientId);
+    var client = clients.find(client => client.id === payload.clientId);
+
+    if (client) {
+        resetKeepAliveInterval(client);
+    } else {
+        console.error('Undefined client');
+    }
+}
+
 function setNewClient(id) {
-    clients.push({
+    console.log('Set new client', id);
+    clients.push({ //add alive sign
         id: id,
-        keepAliveInterval: 0
+        keepAliveInterval: 0,
+        isAlive: true
     });
+
+    if (!publishDataInterval) {
+        startPublishData();
+    }
 }
 
 function removeClient(id) {
@@ -55,15 +84,12 @@ function removeClient(id) {
     });
 }
 
-function resetKeepAliveInterval(id) {
-    var client = clients.find(client => client.id === id);
-    if (client) {
-        client.keepAliveInterval = 0;
-    } else {
-        setNewClient(id);
-        if (!publishDataInterval) {
-            startPublishData();
-        }
+function resetKeepAliveInterval(client) {
+    client.keepAliveInterval = 0;
+    client.isAlive = true;
+
+    if (!publishDataInterval) {
+        startPublishData();
     }
 }
 
@@ -72,11 +98,11 @@ function checkKeepAlive() {
         client.keepAliveInterval += 1000;
 
         if (client.keepAliveInterval > MAX_KEEP_ALIVE_DELAY) {
-            removeClient(client.id);
+            client.isAlive = false;
         }
     });
 
-    if (!clients.length && publishDataInterval) {
+    if (!clients.filter(client => client.isAlive).length && publishDataInterval) {
         stopPublishData();
     }
 }
@@ -89,10 +115,10 @@ function startPublishData() {
     function getDataAndPublish() {
         getData(dataServerOptions)
             .then((data) => {
-                clients.forEach(client => {
+                clients.filter(client => client.isAlive).forEach(client => {
                     data.id = client.id;
                     console.log(`mqtt publish ${client.id} ${JSON.stringify(data)}`);
-                    mqttClient.publish(`ib-test/${client.id}/data`, JSON.stringify(data));
+                    mqttClient.publish(`ib-test/data/${client.id}`, JSON.stringify(data));
                 });
             })
             .catch((error) => {

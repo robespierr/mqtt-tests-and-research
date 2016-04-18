@@ -20,8 +20,8 @@ stompClient.connect('guest', 'guest',
     () => {
         console.log('stomp connected');
 
-        stompClient.subscribe('/topic/registration', stompCallbackDecorator(onRegister));
-        stompClient.subscribe('/topic/keep-alive', stompCallbackDecorator(onKeepAlive));
+        stompClient.subscribe('/topic/ib-test.registration', stompCallbackDecorator(onRegister));
+        stompClient.subscribe('/topic/ib-test.keep-alive', stompCallbackDecorator(onKeepAlive));
     },
     error => {
         console.log(`connection error ${error}`);
@@ -31,7 +31,13 @@ stompClient.connect('guest', 'guest',
 setInterval(checkKeepAlive, CHECK_KEEP_ALIVE_INTERVAL);
 
 function onRegister(payload) {
-    setNewClient(payload.clientId);
+    const client = clients.find(client => client.id === payload.clientId);
+
+    if (!client) {
+        setNewClient(payload.clientId);
+    } else {
+        resetKeepAliveInterval(client);
+    }
 
     if (!publishDataInterval) {
         startPublishData();
@@ -40,18 +46,25 @@ function onRegister(payload) {
 
 function onKeepAlive(payload) {
     console.log('get keep alive', payload.clientId);
+    var client = clients.find(client => client.id === payload.clientId);
 
-    resetKeepAliveInterval(payload.clientId);
+    if (client) {
+        resetKeepAliveInterval(client);
+    } else {
+        console.error('Undefined client');
+    }
 }
 
 function setNewClient(id) {
-    if (!clients.find(client => client.id === id)) {
-        console.log('Set new client', id);
-        clients.push({ //add alive sign
-            id: id,
-            keepAliveInterval: 0,
-            isAlive: true
-        });
+    console.log('Set new client', id);
+    clients.push({ //add alive sign
+        id: id,
+        keepAliveInterval: 0,
+        isAlive: true
+    });
+
+    if (!publishDataInterval) {
+        startPublishData();
     }
 }
 
@@ -61,18 +74,12 @@ function removeClient(id) {
     });
 }
 
-function resetKeepAliveInterval(id) {
-    var client = clients.find(client => client.id === id);
+function resetKeepAliveInterval(client) {
+    client.keepAliveInterval = 0;
+    client.isAlive = true;
 
-    if (client) {
-        client.keepAliveInterval = 0;
-        client.isAlive = true;
-
-        if (!publishDataInterval) {
-            startPublishData();
-        }
-    } else { //todo: check client existing
-        console.error('Undefined client');
+    if (!publishDataInterval) {
+        startPublishData();
     }
 }
 
@@ -101,7 +108,7 @@ function startPublishData() {
                 clients.filter(client => client.isAlive).forEach(client => {
                     data.id = client.id;
                     console.log(`stomp send ${client.id} ${JSON.stringify(data)}`);
-                    stompClient.send(`/topic/${client.id}`, {}, JSON.stringify(data));
+                    stompClient.send(`/topic/ib-test.data.${client.id}`, {}, JSON.stringify(data));
                 });
             })
             .catch((error) => {
